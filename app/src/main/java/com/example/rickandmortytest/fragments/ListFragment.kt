@@ -56,13 +56,27 @@ class ListFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(ListViewModel::class.java)
 
         val rick = Character("Rick", "alive", "Human", "Earth", "male", Uri.EMPTY)
-        val adapter = RecyclerAdapter(arrayListOf(rick), object: RecyclerAdapter.OnClickListener {
+        val morty = Character("Morty", "alive", "Human", "Earth", "male", Uri.EMPTY)
+        val adapter = RecyclerAdapter(arrayListOf(rick, morty), object: RecyclerAdapter.OnClickListener {
             override fun onItemClick(position: Int) {
                 //Todo handle
             }
         })
         binding.rvRecyclerView.adapter = adapter
         binding.rvRecyclerView.layoutManager = LinearLayoutManager(context)
+
+        binding.fabFavourites.setOnClickListener {
+            viewModel.setFavourites()
+        }
+
+        viewModel.isFavourites().observe(viewLifecycleOwner, {
+            if (it) {
+                binding.fabFavourites.setImageResource(R.drawable.ic_heart_on)
+            } else {
+                binding.fabFavourites.setImageResource(R.drawable.ic_heart_off)
+            }
+
+        })
     }
 
 }
