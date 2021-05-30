@@ -23,18 +23,19 @@ class ListRepository {
 
     var isFavourites: MutableLiveData<Boolean> = MutableLiveData(false)
     var characterList: MutableLiveData<List<Character>> = MutableLiveData()
+    var isLoadingData: MutableLiveData<Boolean> = MutableLiveData(false)
 
     init {
         val api = NetworkService.instance.getRickAndMortyApi()
         GlobalScope.launch(Dispatchers.IO) {
+            isLoadingData.postValue(true)
             val response = api.getCharacters()
-            Log.d("ListRepository", "before")
             if (response.isSuccessful) {
                 characterList.postValue(response.body()?.results)
-                //Log.d("ListRepository", "success")
             } else {
                 Log.d("ListRepository", response.code().toString())
             }
+            isLoadingData.postValue(false)
         }
     }
 }

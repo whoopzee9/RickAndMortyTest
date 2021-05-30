@@ -8,8 +8,9 @@ import com.example.rickandmortytest.repositories.ListRepository
 class ListViewModel : ViewModel() {
     private var repository = ListRepository.instance
 
-    fun isFavourites(): LiveData<Boolean> = repository.isFavourites
-    fun setFavourites() = repository.isFavourites.postValue(!isFavourites().value!!)
+    fun isFavouritesLiveData(): LiveData<Boolean> = repository.isFavourites
+    fun setFavourites() = repository.isFavourites.postValue(!isFavouritesLiveData().value!!)
 
-    fun getCharactersList(): LiveData<List<Character>> = repository.characterList
+    fun getCharactersListLiveData(): LiveData<List<Character>> = repository.characterList
+    fun isLoadingLiveData(): LiveData<Boolean> = repository.isLoadingData
 }

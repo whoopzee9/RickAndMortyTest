@@ -1,6 +1,6 @@
 package com.example.rickandmortytest.fragments
 
-import android.net.Uri
+import android.opengl.Visibility
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -12,11 +12,8 @@ import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.rickandmortytest.R
 import com.example.rickandmortytest.adapters.RecyclerAdapter
-import com.example.rickandmortytest.data.Character
 import com.example.rickandmortytest.databinding.ListFragmentBinding
-import com.example.rickandmortytest.databinding.SplashFragmentBinding
 import com.example.rickandmortytest.viewModels.ListViewModel
-import com.example.rickandmortytest.viewModels.SplashViewModel
 
 class ListFragment : Fragment() {
 
@@ -69,7 +66,7 @@ class ListFragment : Fragment() {
             viewModel.setFavourites()
         }
 
-        viewModel.isFavourites().observe(viewLifecycleOwner, {
+        viewModel.isFavouritesLiveData().observe(viewLifecycleOwner, {
             if (it) {
                 binding.fabFavourites.setImageResource(R.drawable.ic_heart_on)
             } else {
@@ -78,9 +75,17 @@ class ListFragment : Fragment() {
 
         })
 
-        viewModel.getCharactersList().observe(viewLifecycleOwner, {
+        viewModel.getCharactersListLiveData().observe(viewLifecycleOwner, {
             adapter.values = it
             adapter.notifyDataSetChanged()
+        })
+
+        viewModel.isLoadingLiveData().observe(viewLifecycleOwner, {
+            if (it) {
+                binding.pbLoadingProgress.visibility = View.VISIBLE
+            } else {
+                binding.pbLoadingProgress.visibility = View.GONE
+            }
         })
     }
 
