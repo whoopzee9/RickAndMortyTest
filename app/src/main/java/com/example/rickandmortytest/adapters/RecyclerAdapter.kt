@@ -9,7 +9,7 @@ import com.example.rickandmortytest.R
 import com.example.rickandmortytest.data.Character
 import java.text.SimpleDateFormat
 
-class RecyclerAdapter(var values: ArrayList<Character>, var onClickListener: OnClickListener): RecyclerView.Adapter<RecyclerViewHolder>() {
+class RecyclerAdapter(var values: List<Character>, var onClickListener: OnClickListener): RecyclerView.Adapter<RecyclerViewHolder>() {
 
     interface OnClickListener {
         fun onItemClick(position: Int)
@@ -28,10 +28,10 @@ class RecyclerAdapter(var values: ArrayList<Character>, var onClickListener: OnC
         holder.itemView.setOnClickListener {
             onClickListener.onItemClick(position)
         }
-//        holder.image.load(values[position].image) {
-//            transformations(CircleCropTransformation())
-//        }
+        holder.image.load(values[position].image) {
+            transformations(CircleCropTransformation())
+        }
         holder.name.text = values[position].name
-        holder.origin.text = values[position].origin
+        holder.origin.text = values[position].origin.name
     }
 }

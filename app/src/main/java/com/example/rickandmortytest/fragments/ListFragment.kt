@@ -55,9 +55,9 @@ class ListFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(ListViewModel::class.java)
 
-        val rick = Character("Rick", "alive", "Human", "Earth", "male", Uri.EMPTY)
-        val morty = Character("Morty", "alive", "Human", "Earth", "male", Uri.EMPTY)
-        val adapter = RecyclerAdapter(arrayListOf(rick, morty), object: RecyclerAdapter.OnClickListener {
+//        val rick = Character("Rick", "alive", "Human", "Earth", "male", Uri.EMPTY)
+//        val morty = Character("Morty", "alive", "Human", "Earth", "male", Uri.EMPTY)
+        val adapter = RecyclerAdapter(ArrayList(), object: RecyclerAdapter.OnClickListener {
             override fun onItemClick(position: Int) {
                 //Todo handle
             }
@@ -76,6 +76,11 @@ class ListFragment : Fragment() {
                 binding.fabFavourites.setImageResource(R.drawable.ic_heart_off)
             }
 
+        })
+
+        viewModel.getCharactersList().observe(viewLifecycleOwner, {
+            adapter.values = it
+            adapter.notifyDataSetChanged()
         })
     }
 

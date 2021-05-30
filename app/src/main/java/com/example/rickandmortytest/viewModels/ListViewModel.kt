@@ -2,6 +2,7 @@ package com.example.rickandmortytest.viewModels
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import com.example.rickandmortytest.data.Character
 import com.example.rickandmortytest.repositories.ListRepository
 
 class ListViewModel : ViewModel() {
@@ -9,4 +10,6 @@ class ListViewModel : ViewModel() {
 
     fun isFavourites(): LiveData<Boolean> = repository.isFavourites
     fun setFavourites() = repository.isFavourites.postValue(!isFavourites().value!!)
+
+    fun getCharactersList(): LiveData<List<Character>> = repository.characterList
 }
