@@ -1,17 +1,18 @@
 package com.example.rickandmortytest.data
 
 data class Character(
-    val id: Int,
-    val name: String,
-    val status: String,
-    val species: String,
-    val type: String,
-    val gender: String,
-    val origin: Location,
-    val location: Location,
-    val image: String,
-    val episode: List<String>,
-    val url: String,
-    val created: String)
+    var id: Int,
+    var name: String,
+    var status: String,
+    var species: String,
+    var type: String,
+    var gender: String,
+    var origin: Location,
+    var location: Location,
+    var image: String,
+    var episode: List<String>,
+    var url: String,
+    var created: String,
+    var isFavourite: Boolean = false)
 
-data class Location(val name: String, val url: String)
+data class Location(var name: String, var url: String)

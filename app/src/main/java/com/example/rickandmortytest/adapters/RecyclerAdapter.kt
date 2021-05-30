@@ -7,6 +7,8 @@ import coil.load
 import coil.transform.CircleCropTransformation
 import com.example.rickandmortytest.R
 import com.example.rickandmortytest.data.Character
+import com.like.LikeButton
+import com.like.OnLikeListener
 import java.text.SimpleDateFormat
 
 class RecyclerAdapter(var values: List<Character>, var onClickListener: OnClickListener): RecyclerView.Adapter<RecyclerViewHolder>() {
@@ -33,5 +35,18 @@ class RecyclerAdapter(var values: List<Character>, var onClickListener: OnClickL
         }
         holder.name.text = values[position].name
         holder.origin.text = values[position].origin.name
+
+        holder.likeButton.isLiked = values[position].isFavourite
+
+        holder.likeButton.setOnLikeListener(object : OnLikeListener {
+            override fun liked(likeButton: LikeButton?) {
+                values[position].isFavourite = true
+            }
+
+            override fun unLiked(likeButton: LikeButton?) {
+                values[position].isFavourite = false
+            }
+
+        })
     }
 }

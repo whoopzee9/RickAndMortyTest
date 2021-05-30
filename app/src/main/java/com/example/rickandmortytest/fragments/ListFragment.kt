@@ -69,8 +69,12 @@ class ListFragment : Fragment() {
         viewModel.isFavouritesLiveData().observe(viewLifecycleOwner, {
             if (it) {
                 binding.fabFavourites.setImageResource(R.drawable.ic_heart_on)
+                adapter.values = adapter.values.filter { it1 -> it1.isFavourite }
+                adapter.notifyDataSetChanged()
             } else {
                 binding.fabFavourites.setImageResource(R.drawable.ic_heart_off)
+                viewModel.getCharactersListLiveData().value?.let { list -> adapter.values = list }
+                adapter.notifyDataSetChanged()
             }
 
         })
