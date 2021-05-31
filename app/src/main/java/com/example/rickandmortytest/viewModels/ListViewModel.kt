@@ -18,12 +18,11 @@ class ListViewModel : ViewModel() {
         ListPageSource()
     }.flow.cachedIn(viewModelScope)
 
-    //private var repository = ListRepository.instance
+    //todo change somehow
+    private var repository = ListRepository.instance
 
-//    fun isFavouritesLiveData(): LiveData<Boolean> = repository.isFavourites
-//    fun setFavourites() = repository.isFavourites.postValue(!isFavouritesLiveData().value!!)
-//
-//    fun getCharactersListLiveData(): LiveData<List<Character>> = repository.characterList
-//    fun isLoadingLiveData(): LiveData<Boolean> = repository.isLoadingData
+    val isFavourites: LiveData<Boolean> = repository.isFavourites
+
+    fun setFavourites() = repository.isFavourites.postValue(!isFavourites.value!!)
 
 }

@@ -13,6 +13,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
+import androidx.paging.filter
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.rickandmortytest.R
 import com.example.rickandmortytest.adapters.HeaderFooterAdapter
@@ -84,28 +85,25 @@ class ListFragment : Fragment() {
             }
         }
 
-//        binding.fabFavourites.setOnClickListener {
-//            viewModel.setFavourites()
-//        }
-//
-//        viewModel.isFavouritesLiveData().observe(viewLifecycleOwner, {
-//            if (it) {
-//                binding.fabFavourites.setImageResource(R.drawable.ic_heart_on)
-//                listAdapter.values = listAdapter.values.filter { it1 -> it1.isFavourite }
-//                listAdapter.notifyDataSetChanged()
-//            } else {
-//                binding.fabFavourites.setImageResource(R.drawable.ic_heart_off)
-//                viewModel.getCharactersListLiveData().value?.let { list -> listAdapter.values = list }
-//                listAdapter.notifyDataSetChanged()
-//            }
-//
-//        })
-//
-//        viewModel.getCharactersListLiveData().observe(viewLifecycleOwner, {
-//            listAdapter.values = it
-//            listAdapter.notifyDataSetChanged()
-//        })
-//
+        binding.fabFavourites.setOnClickListener {
+            viewModel.setFavourites()
+        }
+
+        viewModel.isFavourites.observe(viewLifecycleOwner, {
+            lifecycleScope.launch {
+                if (it) {
+                    binding.fabFavourites.setImageResource(R.drawable.ic_heart_on)
+                    viewModel.characterList.collect {
+                        listAdapter.submitData(it.filter { it1 -> it1.isFavourite })
+                    }
+                } else {
+                    binding.fabFavourites.setImageResource(R.drawable.ic_heart_off)
+                    viewModel.characterList.collect {
+                        listAdapter.submitData(it)
+                    }
+                }
+            }
+        })
 
         val APP_PREFERENCES = "RickAndMortyPrefs"
         val sharedPrefs = requireActivity().getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
