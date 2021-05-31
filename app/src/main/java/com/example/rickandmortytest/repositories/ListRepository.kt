@@ -1,10 +1,12 @@
 package com.example.rickandmortytest.repositories
 
+import android.content.SharedPreferences
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import com.example.rickandmortytest.api.NetworkService
 import com.example.rickandmortytest.data.Character
+import com.example.rickandmortytest.data.Info
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -22,20 +24,6 @@ class ListRepository {
     }
 
     var isFavourites: MutableLiveData<Boolean> = MutableLiveData(false)
-    var characterList: MutableLiveData<List<Character>> = MutableLiveData()
-    var isLoadingData: MutableLiveData<Boolean> = MutableLiveData(false)
+    //var sharedPrefs: SharedPreferences
 
-    init {
-        val api = NetworkService.instance.getRickAndMortyApi()
-        GlobalScope.launch(Dispatchers.IO) {
-            isLoadingData.postValue(true)
-            val response = api.getCharacters()
-            if (response.isSuccessful) {
-                characterList.postValue(response.body()?.results)
-            } else {
-                Log.d("ListRepository", response.code().toString())
-            }
-            isLoadingData.postValue(false)
-        }
-    }
 }

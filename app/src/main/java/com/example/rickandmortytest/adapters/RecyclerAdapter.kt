@@ -2,6 +2,8 @@ package com.example.rickandmortytest.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.transform.CircleCropTransformation
@@ -11,14 +13,10 @@ import com.like.LikeButton
 import com.like.OnLikeListener
 import java.text.SimpleDateFormat
 
-class RecyclerAdapter(var values: List<Character>, var onClickListener: OnClickListener): RecyclerView.Adapter<RecyclerViewHolder>() {
+class RecyclerAdapter(var onClickListener: OnClickListener): PagingDataAdapter<Character, RecyclerViewHolder>(DataDifferntiator) {
 
     interface OnClickListener {
         fun onItemClick(position: Int)
-    }
-
-    override fun getItemCount(): Int {
-        return this.values.size
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerViewHolder {
@@ -30,23 +28,34 @@ class RecyclerAdapter(var values: List<Character>, var onClickListener: OnClickL
         holder.itemView.setOnClickListener {
             onClickListener.onItemClick(position)
         }
-        holder.image.load(values[position].image) {
+        holder.image.load(getItem(position)?.image) {
             transformations(CircleCropTransformation())
         }
-        holder.name.text = values[position].name
-        holder.origin.text = values[position].origin.name
+        holder.name.text = getItem(position)?.name
+        holder.origin.text = getItem(position)?.origin?.name
 
-        holder.likeButton.isLiked = values[position].isFavourite
+        holder.likeButton.isLiked = getItem(position)?.isFavourite ?: false
 
         holder.likeButton.setOnLikeListener(object : OnLikeListener {
             override fun liked(likeButton: LikeButton?) {
-                values[position].isFavourite = true
+                getItem(position)?.isFavourite = true
             }
 
             override fun unLiked(likeButton: LikeButton?) {
-                values[position].isFavourite = false
+                getItem(position)?.isFavourite = false
             }
 
         })
+    }
+
+    object DataDifferntiator : DiffUtil.ItemCallback<Character>() {
+
+        override fun areItemsTheSame(oldItem: Character, newItem: Character): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: Character, newItem: Character): Boolean {
+            return oldItem == newItem
+        }
     }
 }
