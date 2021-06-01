@@ -1,12 +1,13 @@
 package com.example.rickandmortytest.repositories
 
+import android.content.SharedPreferences
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.rickandmortytest.api.NetworkService
 import com.example.rickandmortytest.data.Character
 import retrofit2.HttpException
 
-class ListPageSource: PagingSource<Int, Character>() {
+class ListPageSource(private val sharedPreferences: SharedPreferences): PagingSource<Int, Character>() {
     override fun getRefreshKey(state: PagingState<Int, Character>): Int? {
         val anchorPosition = state.anchorPosition ?: return null
         val anchorPage = state.closestPageToPosition(anchorPosition) ?: return null
@@ -20,6 +21,10 @@ class ListPageSource: PagingSource<Int, Character>() {
             val response = api.getCharacters(pageNumber)
             if (response.isSuccessful) {
                 val characters = response.body()?.results ?: emptyList()
+                characters.forEach {
+                    val isFavourite = sharedPreferences.getBoolean(it.id.toString(), false)
+                    it.isFavourite = isFavourite
+                }
                 val prevKey = if (pageNumber == 1) null else pageNumber - 1
                 val nextKey = if (pageNumber < response.body()!!.info.pages) pageNumber + 1 else null
                 return LoadResult.Page(characters, prevKey, nextKey)

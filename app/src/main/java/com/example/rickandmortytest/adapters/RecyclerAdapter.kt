@@ -17,6 +17,7 @@ class RecyclerAdapter(var onClickListener: OnClickListener): PagingDataAdapter<C
 
     interface OnClickListener {
         fun onItemClick(position: Int)
+        fun updateSharedPrefs(id: Int, value: Boolean)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerViewHolder {
@@ -39,10 +40,12 @@ class RecyclerAdapter(var onClickListener: OnClickListener): PagingDataAdapter<C
         holder.likeButton.setOnLikeListener(object : OnLikeListener {
             override fun liked(likeButton: LikeButton?) {
                 getItem(position)?.isFavourite = true
+                onClickListener.updateSharedPrefs(getItem(position)!!.id, true)
             }
 
             override fun unLiked(likeButton: LikeButton?) {
                 getItem(position)?.isFavourite = false
+                onClickListener.updateSharedPrefs(getItem(position)!!.id, false)
             }
 
         })

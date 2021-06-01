@@ -1,5 +1,6 @@
 package com.example.rickandmortytest.viewModels
 
+import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,10 +13,10 @@ import com.example.rickandmortytest.data.Character
 import com.example.rickandmortytest.repositories.ListPageSource
 import com.example.rickandmortytest.repositories.ListRepository
 
-class ListViewModel : ViewModel() {
+class ListViewModel(private val sharedPreferences: SharedPreferences) : ViewModel() {
 
     val characterList = Pager(PagingConfig(pageSize = 20)) {
-        ListPageSource()
+        ListPageSource(sharedPreferences)
     }.flow.cachedIn(viewModelScope)
 
     //todo change somehow

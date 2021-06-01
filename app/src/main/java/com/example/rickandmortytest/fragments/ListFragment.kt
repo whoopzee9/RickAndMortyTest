@@ -1,6 +1,7 @@
 package com.example.rickandmortytest.fragments
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.opengl.Visibility
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -19,6 +20,7 @@ import com.example.rickandmortytest.R
 import com.example.rickandmortytest.adapters.HeaderFooterAdapter
 import com.example.rickandmortytest.adapters.RecyclerAdapter
 import com.example.rickandmortytest.api.NetworkService
+import com.example.rickandmortytest.api.Settings
 import com.example.rickandmortytest.databinding.ListFragmentBinding
 import com.example.rickandmortytest.viewModels.ListViewModel
 import kotlinx.coroutines.flow.collect
@@ -26,18 +28,16 @@ import kotlinx.coroutines.launch
 
 class ListFragment : Fragment() {
 
-    companion object {
-        fun newInstance() = ListFragment()
-    }
-
     private lateinit var viewModel: ListViewModel
     private lateinit var binding: ListFragmentBinding
+    private lateinit var sharedPrefs: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        sharedPrefs = requireActivity().getSharedPreferences(Settings.APP_PREFERENCES, Context.MODE_PRIVATE)
         viewModel = ViewModelProvider(this, object : ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return ListViewModel() as T
+                return ListViewModel(sharedPrefs) as T
             }
         }).get(ListViewModel::class.java)
     }
@@ -63,6 +63,10 @@ class ListFragment : Fragment() {
         val listAdapter = RecyclerAdapter(object: RecyclerAdapter.OnClickListener {
             override fun onItemClick(position: Int) {
                 //Todo handle
+            }
+
+            override fun updateSharedPrefs(id: Int, value: Boolean) {
+                sharedPrefs.edit().putBoolean(id.toString(), value).apply()
             }
         })
 
@@ -104,10 +108,6 @@ class ListFragment : Fragment() {
                 }
             }
         })
-
-        val APP_PREFERENCES = "RickAndMortyPrefs"
-        val sharedPrefs = requireActivity().getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
-        val editor = sharedPrefs.edit()
 
     }
 
