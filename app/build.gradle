@@ -62,11 +62,25 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1"
 
     // Kotlin components
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.21"
-    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2"
-    api "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.31"
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3"
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.3"
 
     // DataBinding
     kapt "com.android.databinding:compiler:3.2.0-alpha10"
     kapt "androidx.databinding:databinding-common:4.2.1"
+
+    //Like button
+    implementation 'com.github.jd-alexander:LikeButton:0.2.3'
+
+    //coil
+    implementation "io.coil-kt:coil:1.1.1"
+
+    //retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.8.0'
+
+    //paging3
+    implementation "androidx.paging:paging-runtime-ktx:3.0.0"
 }
