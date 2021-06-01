@@ -14,7 +14,9 @@
             android:id="@+id/action_splashFragment_to_listFragment"
             app:enterAnim="@anim/fade_in"
             app:exitAnim="@anim/fade_out"
-            app:destination="@id/listFragment" />
+            app:destination="@id/listFragment"
+            app:popUpTo="@+id/main_nav"
+            app:popUpToInclusive="true"/>
     </fragment>
 
     <fragment
