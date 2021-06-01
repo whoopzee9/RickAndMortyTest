@@ -13,6 +13,7 @@ import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.paging.filter
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,6 +22,7 @@ import com.example.rickandmortytest.adapters.HeaderFooterAdapter
 import com.example.rickandmortytest.adapters.RecyclerAdapter
 import com.example.rickandmortytest.api.NetworkService
 import com.example.rickandmortytest.api.Settings
+import com.example.rickandmortytest.data.Character
 import com.example.rickandmortytest.databinding.ListFragmentBinding
 import com.example.rickandmortytest.viewModels.ListViewModel
 import kotlinx.coroutines.flow.collect
@@ -61,8 +63,10 @@ class ListFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         val listAdapter = RecyclerAdapter(object: RecyclerAdapter.OnClickListener {
-            override fun onItemClick(position: Int) {
-                //Todo handle
+            override fun onItemClick(item: Character) {
+                val bundle = Bundle()
+                bundle.putParcelable(Settings.INFO, item)
+                findNavController().navigate(R.id.action_listFragment_to_informationFragment, bundle)
             }
 
             override fun updateSharedPrefs(id: Int, value: Boolean) {

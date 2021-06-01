@@ -16,7 +16,7 @@ import java.text.SimpleDateFormat
 class RecyclerAdapter(var onClickListener: OnClickListener): PagingDataAdapter<Character, RecyclerViewHolder>(DataDifferntiator) {
 
     interface OnClickListener {
-        fun onItemClick(position: Int)
+        fun onItemClick(item: Character)
         fun updateSharedPrefs(id: Int, value: Boolean)
     }
 
@@ -27,7 +27,7 @@ class RecyclerAdapter(var onClickListener: OnClickListener): PagingDataAdapter<C
 
     override fun onBindViewHolder(holder: RecyclerViewHolder, position: Int) {
         holder.itemView.setOnClickListener {
-            onClickListener.onItemClick(position)
+            getItem(position)?.let { it1 -> onClickListener.onItemClick(it1) }
         }
         holder.image.load(getItem(position)?.image) {
             transformations(CircleCropTransformation())
