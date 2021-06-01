@@ -2,16 +2,16 @@ package com.example.rickandmortytest.fragments
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.opengl.Visibility
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.LinearInterpolator
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
@@ -20,7 +20,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.rickandmortytest.R
 import com.example.rickandmortytest.adapters.HeaderFooterAdapter
 import com.example.rickandmortytest.adapters.RecyclerAdapter
-import com.example.rickandmortytest.api.NetworkService
 import com.example.rickandmortytest.api.Settings
 import com.example.rickandmortytest.data.Character
 import com.example.rickandmortytest.databinding.ListFragmentBinding
@@ -28,11 +27,13 @@ import com.example.rickandmortytest.viewModels.ListViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
+
 class ListFragment : Fragment() {
 
     private lateinit var viewModel: ListViewModel
     private lateinit var binding: ListFragmentBinding
     private lateinit var sharedPrefs: SharedPreferences
+    private lateinit var listAdapter: RecyclerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,7 +63,7 @@ class ListFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        val listAdapter = RecyclerAdapter(object: RecyclerAdapter.OnClickListener {
+        listAdapter = RecyclerAdapter(object: RecyclerAdapter.OnClickListener {
             override fun onItemClick(item: Character) {
                 val bundle = Bundle()
                 bundle.putParcelable(Settings.INFO, item)
@@ -74,18 +75,7 @@ class ListFragment : Fragment() {
             }
         })
 
-        binding.rvRecyclerView.apply {
-            adapter = listAdapter.withLoadStateHeaderAndFooter(
-                header = HeaderFooterAdapter(),
-                footer = HeaderFooterAdapter()
-            )
-            layoutManager = LinearLayoutManager(context)
-        }
-
-        listAdapter.addLoadStateListener {
-            binding.rvRecyclerView.isVisible = it.refresh != LoadState.Loading
-            binding.pbLoadingProgress.isVisible = it.refresh == LoadState.Loading
-        }
+        setupRecyclerView()
 
         lifecycleScope.launch {
             viewModel.characterList.collect {
@@ -113,6 +103,38 @@ class ListFragment : Fragment() {
             }
         })
 
+    }
+
+    private fun setupRecyclerView() {
+        binding.rvRecyclerView.apply {
+            adapter = listAdapter.withLoadStateHeaderAndFooter(
+                header = HeaderFooterAdapter(),
+                footer = HeaderFooterAdapter()
+            )
+            layoutManager = LinearLayoutManager(context)
+        }
+
+
+        binding.rvRecyclerView.setOnScrollChangeListener { view, scrollX, scrollY, oldScrollX, oldScrollY ->
+            if (scrollY > oldScrollY) {
+                binding.fabFavourites.hide()
+            } else {
+                binding.fabFavourites.show()
+            }
+//            val fab = binding.fabFavourites
+//            if (scrollY > oldScrollY) {
+//                val fabBottomMargin = fab.layoutParams.height
+//                fab.animate().translationY((2 * fab.height + fabBottomMargin).toFloat())
+//                    .setInterpolator(LinearInterpolator()).start()
+//            } else {
+//                fab.animate().translationY(0F).setInterpolator(LinearInterpolator()).start()
+//            }
+        }
+
+        listAdapter.addLoadStateListener {
+            binding.rvRecyclerView.isVisible = it.refresh != LoadState.Loading
+            binding.pbLoadingProgress.isVisible = it.refresh == LoadState.Loading
+        }
     }
 
 }
