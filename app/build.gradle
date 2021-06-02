@@ -83,4 +83,9 @@ dependencies {
 
     //paging3
     implementation "androidx.paging:paging-runtime-ktx:3.0.0"
+
+    //room
+    def room_version = "2.3.0"
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
 }
