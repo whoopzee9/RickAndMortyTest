@@ -2,6 +2,7 @@ package com.example.rickandmortytest.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -18,6 +19,7 @@ class RecyclerAdapter(var onClickListener: OnClickListener): PagingDataAdapter<C
     interface OnClickListener {
         fun onItemClick(item: Character)
         fun updateSharedPrefs(id: Int, value: Boolean)
+        fun showToast(message: String)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerViewHolder {
@@ -27,7 +29,12 @@ class RecyclerAdapter(var onClickListener: OnClickListener): PagingDataAdapter<C
 
     override fun onBindViewHolder(holder: RecyclerViewHolder, position: Int) {
         holder.itemView.setOnClickListener {
-            getItem(position)?.let { it1 -> onClickListener.onItemClick(it1) }
+            notifyDataSetChanged()
+            if (position >= itemCount) {
+                onClickListener.showToast("Data is updating")
+            } else {
+                getItem(position)?.let { it1 -> onClickListener.onItemClick(it1) }
+            }
         }
         holder.image.load(getItem(position)?.image) {
             transformations(CircleCropTransformation())
