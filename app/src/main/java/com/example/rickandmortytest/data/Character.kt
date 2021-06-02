@@ -1,5 +1,9 @@
 package com.example.rickandmortytest.data
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class Character(
     var id: Int,
     var name: String,
@@ -13,6 +17,7 @@ data class Character(
     var episode: List<String>,
     var url: String,
     var created: String,
-    var isFavourite: Boolean = false)
+    var isFavourite: Boolean = false): Parcelable
 
-data class Location(var name: String, var url: String)
+@Parcelize
+data class Location(var name: String, var url: String): Parcelable
