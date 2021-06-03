@@ -1,20 +1,19 @@
 package com.example.rickandmortytest.fragments
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import coil.load
 import com.example.rickandmortytest.R
 import com.example.rickandmortytest.api.Settings
 import com.example.rickandmortytest.data.Character
 import com.example.rickandmortytest.databinding.InformationFragmentBinding
 import com.example.rickandmortytest.viewModels.InformationViewModel
-import com.example.rickandmortytest.viewModels.ListViewModel
 
 class InformationFragment : Fragment() {
 
@@ -33,7 +32,7 @@ class InformationFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = DataBindingUtil.inflate(
             inflater,
             R.layout.information_fragment,
@@ -42,11 +41,7 @@ class InformationFragment : Fragment() {
         )
         binding.lifecycleOwner = this
         binding.informationViewModel = viewModel
-        return binding.root
-    }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
 
         viewModel.characterLiveData.observe(viewLifecycleOwner) {
             binding.infoIvCharacterImage.load(it.image)
@@ -54,6 +49,8 @@ class InformationFragment : Fragment() {
 
         val character: Character? = arguments?.getParcelable(Settings.INFO)
         viewModel.setCharacterInfo(character)
+
+        return binding.root
     }
 
 }

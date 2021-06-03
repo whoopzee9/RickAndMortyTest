@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.rickandmortytest"
-        minSdkVersion 24
+        minSdkVersion 21
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -83,4 +83,9 @@ dependencies {
 
     //paging3
     implementation "androidx.paging:paging-runtime-ktx:3.0.0"
+
+    //room
+    def room_version = "2.3.0"
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
 }
