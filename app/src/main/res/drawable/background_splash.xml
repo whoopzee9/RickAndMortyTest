@@ -7,7 +7,7 @@
     <item>
         <bitmap
             android:gravity="center"
-            android:src="@drawable/morty13hd"/>
+            android:src="@drawable/morty_without_spaces"/>
     </item>
 
 </layer-list>

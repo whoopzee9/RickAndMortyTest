@@ -6,5 +6,5 @@ data class Info(
     var count: Int,
     var pages: Int,
     var next: String?,
-    var prev: String?,
-    var nextPage: Int? = next?.substring(next.indexOf('=') + 1)?.toInt())
+    var prev: String?
+)

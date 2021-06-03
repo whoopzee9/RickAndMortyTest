@@ -8,7 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class NetworkService {
     companion object {
-        val instance : NetworkService by lazy { holder.Instance }
+        val instance: NetworkService by lazy { holder.Instance }
     }
 
     private object holder {

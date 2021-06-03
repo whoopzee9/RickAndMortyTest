@@ -15,30 +15,23 @@ class SplashFragment : Fragment() {
 
     private lateinit var binding: SplashFragmentBinding
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = SplashFragmentBinding.inflate(inflater)
-        return binding.root
-    }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        binding.animationView.addAnimatorListener(object: Animator.AnimatorListener {
-            override fun onAnimationStart(p0: Animator?) {}
-
+        binding.animationView.addAnimatorListener(object : Animator.AnimatorListener {
             override fun onAnimationEnd(p0: Animator?) {
                 findNavController().navigate(R.id.action_splashFragment_to_listFragment)
             }
 
+            override fun onAnimationStart(p0: Animator?) {}
             override fun onAnimationCancel(p0: Animator?) {}
-
             override fun onAnimationRepeat(p0: Animator?) {}
 
         })
+        return binding.root
     }
 
 }

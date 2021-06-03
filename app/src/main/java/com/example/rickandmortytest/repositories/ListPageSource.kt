@@ -1,15 +1,17 @@
 package com.example.rickandmortytest.repositories
 
 import android.content.SharedPreferences
-import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.rickandmortytest.api.NetworkService
 import com.example.rickandmortytest.data.Character
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import retrofit2.HttpException
 
-class ListPageSource(private val sharedPreferences: SharedPreferences): PagingSource<Int, Character>() {
+class ListPageSource(private val sharedPreferences: SharedPreferences) :
+    PagingSource<Int, Character>() {
     override fun getRefreshKey(state: PagingState<Int, Character>): Int? {
         val anchorPosition = state.anchorPosition ?: return null
         val anchorPage = state.closestPageToPosition(anchorPosition) ?: return null
@@ -28,15 +30,14 @@ class ListPageSource(private val sharedPreferences: SharedPreferences): PagingSo
                     it.isFavourite = isFavourite
                 }
                 val prevKey = if (pageNumber == 1) null else pageNumber - 1
-                val nextKey = if (pageNumber < response.body()!!.info.pages) pageNumber + 1 else null
+                val nextKey =
+                    if (pageNumber < response.body()!!.info.pages) pageNumber + 1 else null
                 return LoadResult.Page(characters, prevKey, nextKey)
             } else {
-                println(response.code())
                 return LoadResult.Error(HttpException(response))
             }
         } catch (e: Exception) {
             if (params.key == null) { //Nothing has been loaded
-                //TODO show toast
                 val db = NetworkService.instance.getCharactersTable()
                 var characters: List<Character> = emptyList()
                 val res = GlobalScope.launch(Dispatchers.IO) {

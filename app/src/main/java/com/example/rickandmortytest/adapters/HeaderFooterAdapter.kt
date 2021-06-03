@@ -9,7 +9,7 @@ import androidx.paging.LoadStateAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rickandmortytest.R
 
-class HeaderFooterAdapter: LoadStateAdapter<HeaderFooterAdapter.HeaderFooterViewHolder>() {
+class HeaderFooterAdapter : LoadStateAdapter<HeaderFooterAdapter.HeaderFooterViewHolder>() {
     override fun onBindViewHolder(holder: HeaderFooterViewHolder, loadState: LoadState) {
         holder.itemView.isVisible = loadState == LoadState.Loading
     }
@@ -18,7 +18,8 @@ class HeaderFooterAdapter: LoadStateAdapter<HeaderFooterAdapter.HeaderFooterView
         parent: ViewGroup,
         loadState: LoadState
     ): HeaderFooterViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.progress_row_layout, parent, false)
+        val itemView =
+            LayoutInflater.from(parent.context).inflate(R.layout.progress_row_layout, parent, false)
         return HeaderFooterViewHolder(itemView)
     }
 

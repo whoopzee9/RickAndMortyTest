@@ -2,10 +2,8 @@ package com.example.rickandmortytest.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.transform.CircleCropTransformation
 import com.example.rickandmortytest.R
@@ -17,30 +15,26 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.text.SimpleDateFormat
 
-class RecyclerAdapter(var onClickListener: OnClickListener): PagingDataAdapter<Character, RecyclerViewHolder>(DataDifferntiator) {
+class RecyclerAdapter(var eventHandler: EventHandler) :
+    PagingDataAdapter<Character, RecyclerViewHolder>(DataDifferentiator) {
 
-    interface OnClickListener {
+    interface EventHandler {
         fun onItemClick(item: Character)
         fun updateSharedPrefs(id: Int, value: Boolean)
-        fun showToast(message: String)
         fun deleteFavourite(position: Int)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.list_row_layout, parent, false)
+        val itemView =
+            LayoutInflater.from(parent.context).inflate(R.layout.list_row_layout, parent, false)
         return RecyclerViewHolder(itemView)
     }
 
     override fun onBindViewHolder(holder: RecyclerViewHolder, position: Int) {
 
         holder.itemView.setOnClickListener {
-            if (holder.absoluteAdapterPosition >= itemCount) {
-                onClickListener.showToast("Data is updating")
-            } else {
-                getItem(holder.absoluteAdapterPosition)?.let { it1 -> onClickListener.onItemClick(it1) }
-            }
+            getItem(holder.absoluteAdapterPosition)?.let { it1 -> eventHandler.onItemClick(it1) }
         }
         holder.image.load(getItem(position)?.image) {
             transformations(CircleCropTransformation())
@@ -52,28 +46,33 @@ class RecyclerAdapter(var onClickListener: OnClickListener): PagingDataAdapter<C
 
         holder.likeButton.setOnLikeListener(object : OnLikeListener {
             override fun liked(likeButton: LikeButton?) {
-                getItem(holder.absoluteAdapterPosition)?.isFavourite = true
-                onClickListener.updateSharedPrefs(getItem(holder.absoluteAdapterPosition)!!.id, true)
+                val pos = holder.absoluteAdapterPosition
+                getItem(pos)?.isFavourite = true
+                eventHandler.updateSharedPrefs(getItem(pos)!!.id, true)
                 GlobalScope.launch(Dispatchers.IO) {
-                    NetworkService.instance.getCharactersTable().insertCharacter(getItem(holder.absoluteAdapterPosition)!!)
+                    NetworkService.instance.getCharactersTable()
+                        .insertCharacter(getItem(pos)!!)
                 }
             }
 
             override fun unLiked(likeButton: LikeButton?) {
-                getItem(holder.absoluteAdapterPosition)?.isFavourite = false
-                onClickListener.updateSharedPrefs(getItem(holder.absoluteAdapterPosition)!!.id, false)
+                val pos = holder.absoluteAdapterPosition
+                getItem(pos)?.isFavourite = false
+                eventHandler.updateSharedPrefs(getItem(pos)!!.id, false)
                 GlobalScope.launch(Dispatchers.IO) {
-                    NetworkService.instance.getCharactersTable().deleteCharacter(getItem(holder.absoluteAdapterPosition)!!)
+                    NetworkService.instance.getCharactersTable()
+                        .deleteCharacter(getItem(pos)!!)
                     withContext(Dispatchers.Main) {
-                        onClickListener.deleteFavourite(holder.absoluteAdapterPosition)
+                        eventHandler.deleteFavourite(pos)
                     }
                 }
+
             }
 
         })
     }
 
-    object DataDifferntiator : DiffUtil.ItemCallback<Character>() {
+    object DataDifferentiator : DiffUtil.ItemCallback<Character>() {
 
         override fun areItemsTheSame(oldItem: Character, newItem: Character): Boolean {
             return oldItem.id == newItem.id
