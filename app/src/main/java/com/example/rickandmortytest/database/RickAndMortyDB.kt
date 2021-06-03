@@ -6,5 +6,5 @@ import com.example.rickandmortytest.data.Character
 
 @Database(entities = [Character::class], version = 1, exportSchema = false)
 abstract class RickAndMortyDB: RoomDatabase() {
-    abstract fun characters(): RickAndMortyDao
+    abstract fun characterDao(): RickAndMortyDao
 }

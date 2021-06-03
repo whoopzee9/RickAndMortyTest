@@ -1,10 +1,7 @@
 package com.example.rickandmortytest.data
 
 import android.os.Parcelable
-import androidx.room.Embedded
-import androidx.room.Entity
-import androidx.room.Ignore
-import androidx.room.PrimaryKey
+import androidx.room.*
 import kotlinx.parcelize.Parcelize
 
 @Entity(tableName = "characters")
@@ -29,7 +26,32 @@ data class Character(
     var url: String,
     @Ignore
     var created: String,
-    var isFavourite: Boolean = false): Parcelable
+    var isFavourite: Boolean = false): Parcelable {
+        constructor(
+            id: Int,
+            name: String,
+            status: String,
+            species: String,
+            gender: String,
+            origin: Location,
+            image: String,
+            isFavourite: Boolean): this(
+            id = id,
+            name = name,
+            status = status,
+            species = species,
+            type = "",
+            gender = gender,
+            origin = origin,
+            location = Location("", ""),
+            image = image,
+            episode = emptyList<String>(),
+            url = "",
+            created = "",
+            isFavourite = isFavourite)
+}
 
 @Parcelize
-data class Location(var name: String, @Ignore var url: String): Parcelable
+data class Location(var name: String, @Ignore var url: String): Parcelable {
+    constructor(name: String): this(name = name, url = "")
+}

@@ -1,6 +1,5 @@
 package com.example.rickandmortytest.database
 
-import androidx.paging.DataSource
 import androidx.room.*
 import com.example.rickandmortytest.data.Character
 
@@ -8,7 +7,7 @@ import com.example.rickandmortytest.data.Character
 interface RickAndMortyDao {
 
     @Query("SELECT * FROM characters")
-    fun getAllFavouriteCharacters(): DataSource.Factory<Int, Character>
+    fun getAllFavouriteCharacters(): List<Character>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertCharacter(character: Character)

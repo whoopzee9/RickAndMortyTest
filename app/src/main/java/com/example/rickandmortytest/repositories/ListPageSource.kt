@@ -6,6 +6,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.rickandmortytest.api.NetworkService
 import com.example.rickandmortytest.data.Character
+import kotlinx.coroutines.*
 import retrofit2.HttpException
 
 class ListPageSource(private val sharedPreferences: SharedPreferences): PagingSource<Int, Character>() {
@@ -30,10 +31,22 @@ class ListPageSource(private val sharedPreferences: SharedPreferences): PagingSo
                 val nextKey = if (pageNumber < response.body()!!.info.pages) pageNumber + 1 else null
                 return LoadResult.Page(characters, prevKey, nextKey)
             } else {
+                println(response.code())
                 return LoadResult.Error(HttpException(response))
             }
         } catch (e: Exception) {
-            return LoadResult.Error(e)
+            if (params.key == null) { //Nothing has been loaded
+                //TODO show toast
+                val db = NetworkService.instance.getCharactersTable()
+                var characters: List<Character> = emptyList()
+                val res = GlobalScope.launch(Dispatchers.IO) {
+                    characters = db.getAllFavouriteCharacters()
+                }
+                res.join()
+                return LoadResult.Page(characters, null, null)
+            } else {
+                return LoadResult.Error(e)
+            }
         }
     }
 }

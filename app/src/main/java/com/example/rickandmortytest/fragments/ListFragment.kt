@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.rickandmortytest.R
 import com.example.rickandmortytest.adapters.HeaderFooterAdapter
 import com.example.rickandmortytest.adapters.RecyclerAdapter
+import com.example.rickandmortytest.api.NetworkService
 import com.example.rickandmortytest.api.Settings
 import com.example.rickandmortytest.data.Character
 import com.example.rickandmortytest.databinding.ListFragmentBinding
@@ -44,6 +45,7 @@ class ListFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        NetworkService.instance.initDatabase(requireContext())
         sharedPrefs = requireActivity().getSharedPreferences(Settings.APP_PREFERENCES, Context.MODE_PRIVATE)
         viewModel = ViewModelProvider(this, object : ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
@@ -80,27 +82,24 @@ class ListFragment : Fragment() {
             viewModel.viewModelScope.launch {
                 if (it) {
                     binding.fabFavourites.setImageResource(R.drawable.ic_heart_on)
-//                    viewModel.characterList.observe(viewLifecycleOwner, {
-//                        println("Observe 1")
-//                        val data =
-//                        listAdapter.submitData(lifecycle, it.filter { it1 -> it1.isFavourite })
-//                        listAdapter.notifyDataSetChanged()
-//                    })
-                    viewModel.characterList.collectLatest {
-                        listAdapter.submitData(it.filter { it1 -> it1.isFavourite })
+                    viewModel.characterList.observe(viewLifecycleOwner, {
+                        listAdapter.submitData(lifecycle, it.filter { it1 -> it1.isFavourite })
                         listAdapter.notifyDataSetChanged()
-                    }
+                    })
+//                    viewModel.characterList.collectLatest {
+//                        listAdapter.submitData(it.filter { it1 -> it1.isFavourite })
+//                        listAdapter.notifyDataSetChanged()
+//                    }
                 } else {
                     binding.fabFavourites.setImageResource(R.drawable.ic_heart_off)
-//                    viewModel.characterList.observe(viewLifecycleOwner, {
-//                        println("Observe 2")
-//                        listAdapter.submitData(lifecycle, it)
-//                        listAdapter.notifyDataSetChanged()
-//                    })
-                    viewModel.characterList.collectLatest {
-                        listAdapter.submitData(it)
+                    viewModel.characterList.observe(viewLifecycleOwner, {
+                        listAdapter.submitData(lifecycle, it)
                         listAdapter.notifyDataSetChanged()
-                    }
+                    })
+//                    viewModel.characterList.collectLatest {
+//                        listAdapter.submitData(it)
+//                        listAdapter.notifyDataSetChanged()
+//                    }
                 }
             }
         })
@@ -122,6 +121,12 @@ class ListFragment : Fragment() {
 
             override fun showToast(message: String) {
                 Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+            }
+
+            override fun deleteFavourite(position: Int) {
+                if (viewModel.isFavourites.value == true) {
+                    listAdapter.notifyItemRemoved(position)
+                }
             }
         })
     }

@@ -1,5 +1,8 @@
 package com.example.rickandmortytest.api
 
+import android.content.Context
+import androidx.room.Room
+import com.example.rickandmortytest.database.RickAndMortyDB
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -19,5 +22,14 @@ class NetworkService {
         .build()
         .create(RickAndMortyApi::class.java)
 
+    private lateinit var database: RickAndMortyDB
+
     fun getRickAndMortyApi() = retrofitApi
+
+    fun initDatabase(context: Context) {
+        database = Room.databaseBuilder(context, RickAndMortyDB::class.java, "RickAndMortyDB")
+            .build()
+    }
+
+    fun getCharactersTable() = database.characterDao()
 }

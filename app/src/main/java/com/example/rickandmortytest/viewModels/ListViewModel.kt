@@ -14,7 +14,7 @@ class ListViewModel(sharedPreferences: SharedPreferences) : ViewModel() {
 
     val characterList = Pager(PagingConfig(pageSize = 20)) {
         ListPageSource(sharedPreferences)
-    }.flow.cachedIn(viewModelScope) //liveData.cachedIn(viewModelScope)
+    }.liveData.cachedIn(viewModelScope) //liveData.cachedIn(viewModelScope)
 
     private var isFavouritesMutableLiveData: MutableLiveData<Boolean> = MutableLiveData(false)
     val isFavourites: LiveData<Boolean> = isFavouritesMutableLiveData

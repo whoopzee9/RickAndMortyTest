@@ -9,9 +9,14 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.transform.CircleCropTransformation
 import com.example.rickandmortytest.R
+import com.example.rickandmortytest.api.NetworkService
 import com.example.rickandmortytest.data.Character
 import com.like.LikeButton
 import com.like.OnLikeListener
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 
 class RecyclerAdapter(var onClickListener: OnClickListener): PagingDataAdapter<Character, RecyclerViewHolder>(DataDifferntiator) {
@@ -20,6 +25,7 @@ class RecyclerAdapter(var onClickListener: OnClickListener): PagingDataAdapter<C
         fun onItemClick(item: Character)
         fun updateSharedPrefs(id: Int, value: Boolean)
         fun showToast(message: String)
+        fun deleteFavourite(position: Int)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerViewHolder {
@@ -28,12 +34,12 @@ class RecyclerAdapter(var onClickListener: OnClickListener): PagingDataAdapter<C
     }
 
     override fun onBindViewHolder(holder: RecyclerViewHolder, position: Int) {
+
         holder.itemView.setOnClickListener {
-            notifyDataSetChanged()
-            if (position >= itemCount) {
+            if (holder.absoluteAdapterPosition >= itemCount) {
                 onClickListener.showToast("Data is updating")
             } else {
-                getItem(position)?.let { it1 -> onClickListener.onItemClick(it1) }
+                getItem(holder.absoluteAdapterPosition)?.let { it1 -> onClickListener.onItemClick(it1) }
             }
         }
         holder.image.load(getItem(position)?.image) {
@@ -46,13 +52,22 @@ class RecyclerAdapter(var onClickListener: OnClickListener): PagingDataAdapter<C
 
         holder.likeButton.setOnLikeListener(object : OnLikeListener {
             override fun liked(likeButton: LikeButton?) {
-                getItem(position)?.isFavourite = true
-                onClickListener.updateSharedPrefs(getItem(position)!!.id, true)
+                getItem(holder.absoluteAdapterPosition)?.isFavourite = true
+                onClickListener.updateSharedPrefs(getItem(holder.absoluteAdapterPosition)!!.id, true)
+                GlobalScope.launch(Dispatchers.IO) {
+                    NetworkService.instance.getCharactersTable().insertCharacter(getItem(holder.absoluteAdapterPosition)!!)
+                }
             }
 
             override fun unLiked(likeButton: LikeButton?) {
-                getItem(position)?.isFavourite = false
-                onClickListener.updateSharedPrefs(getItem(position)!!.id, false)
+                getItem(holder.absoluteAdapterPosition)?.isFavourite = false
+                onClickListener.updateSharedPrefs(getItem(holder.absoluteAdapterPosition)!!.id, false)
+                GlobalScope.launch(Dispatchers.IO) {
+                    NetworkService.instance.getCharactersTable().deleteCharacter(getItem(holder.absoluteAdapterPosition)!!)
+                    withContext(Dispatchers.Main) {
+                        onClickListener.deleteFavourite(holder.absoluteAdapterPosition)
+                    }
+                }
             }
 
         })
