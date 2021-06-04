@@ -19,8 +19,7 @@
             android:id="@+id/list_iv_character_image"
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:layout_margin="10dp"
-            android:src="@drawable/heart_off"/>
+            android:layout_margin="10dp"/>
 
         <LinearLayout
             android:id="@+id/linear_layout"
@@ -37,6 +36,7 @@
                 android:id="@+id/list_tv_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-black"
                 android:text="Name"
                 android:textColor="#000000"
                 android:textSize="20sp"
